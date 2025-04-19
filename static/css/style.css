@@ -1,0 +1,104 @@
+:root {
+    --primary-color: #198754;
+    --secondary-color: #6c757d;
+    --light-green: #e8f5e9;
+    --dark-green: #1b5e20;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Navbar styling */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Card styling */
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    font-weight: bold;
+}
+
+/* Post styling */
+.post-content {
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+/* Category badges */
+.badge {
+    font-weight: normal;
+    padding: 5px 10px;
+}
+
+/* Footer styling */
+footer {
+    margin-top: 50px;
+}
+
+footer a {
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Environmental icons */
+.eco-icon {
+    color: var(--primary-color);
+    margin-right: 5px;
+}
+
+/* Hero section */
+.bg-image {
+    position: relative;
+}
+
+.bg-image .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Author card */
+.author-card {
+    background-color: var(--light-green);
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Comment section */
+.comment {
+    padding: 15px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
