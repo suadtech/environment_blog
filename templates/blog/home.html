@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Environment Blog{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="bg-image p-5 text-center shadow-1-strong rounded mb-5 text-white" 
+         style="background-image: url('/static/images/hero-image.jpg') ; height: 400px; background-size: cover; background-position: center;">
+        <div class="mask" style="background-color: rgba(0, 0, 0, 0.6);">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div class="text-white">
+                    <h1 class="mb-3">Environment Blog</h1>
+                    <h4 class="mb-3">Raising awareness about environmental issues and promoting sustainable living</h4>
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-outline-light btn-lg" href="{% url 'blog:post_new' %}" role="button">
+                            <i class="fas fa-edit me-2"></i>Create New Post
+                        </a>
+                    {% else %}
+                        <a class="btn btn-outline-light btn-lg" href="{% url 'blog:register' %}" role="button">
+                            <i class="fas fa-user-plus me-2"></i>Join Our Community
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-md-8">
+            <h2 class="mb-4">Latest Articles</h2>
+            
+            {% if posts %}
+                {% for post in posts %}
+                    <div class="card mb-4">
+                        {% if post.featured_image %}
+                            <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h3 class="card-title">{{ post.title }}</h3>
+                            <div class="text-muted mb-2">
+                                <small>
+                                    <i class="fas fa-user me-1"></i> {{ post.author.username }} | 
+                                    <i class="fas fa-calendar-alt me-1"></i> {{ post.publish|date:"F d, Y" }}
+                                </small>
+                            </div>
+                            <p class="card-text">{{ post.content|truncatewords:50 }}</p>
+                            <a href="{% url 'blog:post_detail' post.pk %}" class="btn btn-success">
+                                Read More <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            <i class="fas fa-tags me-1"></i> Categories: 
+                            {% for category in post.categories.all %}
+                                <a href="{% url 'blog:category_posts' category.slug %}" class="badge bg-secondary text-decoration-none">
+                                    {{ category.name }}
+                                </a>
+                                {% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                Uncategorized
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> No posts available yet. Be the first to create a post!
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-folder-open me-2"></i>Categories</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for category in categories %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{% url 'blog:category_posts' category.slug %}" class="text-decoration-none">
+                                    {{ category.name }}
+                                </a>
+                                <span class="badge bg-success rounded-pill">
+                                    {{ category.posts.count }}
+                                </span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">No categories available</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-leaf me-2"></i>About Environment Blog</h5>
+                </div>
+                <div class="card-body">
+                    <p>Our mission is to raise awareness about environmental issues and promote sustainable living practices. Join our community to share your knowledge and experiences.</p>
+                    <a href="{% url 'blog:register' %}" class="btn btn-outline-success">Join Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
