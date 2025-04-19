@@ -1,8 +1,5 @@
 from django.contrib import admin
-from .models import Category, Post, Comment, Profile
-
-
-# Register your models here.
+from .models import Category, Post, Comment, UserProfile
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -12,23 +9,24 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['title', 'slug', 'author', 'publish', 'status']
-    list_filter = ['status', 'created', 'publish', 'author']
+    list_display = ['title', 'author', 'publish', 'status']
+    list_filter = ['status', 'created', 'publish', 'author', 'categories']
     search_fields = ['title', 'content']
     prepopulated_fields = {'slug': ('title',)}
     raw_id_fields = ['author']
     date_hierarchy = 'publish'
-    ordering = ['status', '-publish']
+    ordering = ['-publish']
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'post', 'created', 'active']
+    # Fix: Change 'name' and 'email' to 'author' and 'post'
+    list_display = ['author', 'post', 'created', 'active']
     list_filter = ['active', 'created', 'updated']
-    search_fields = ['name', 'email', 'body']
+    search_fields = ['content', 'author__username']
 
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'location']
-    search_fields = ['user__username', 'location']
-
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    # Fix: Remove 'location' and use fields that exist in UserProfile
+    list_display = ['user', 'website']
+    search_fields = ['user__username', 'bio']
 

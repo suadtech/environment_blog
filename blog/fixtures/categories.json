@@ -1,0 +1,57 @@
+[
+    {
+      "model": "blog.category",
+      "pk": 1,
+      "fields": {
+        "name": "Climate Change",
+        "slug": "climate-change",
+        "description": "Articles about global warming, climate science, and environmental policy."
+      }
+    },
+    {
+      "model": "blog.category",
+      "pk": 2,
+      "fields": {
+        "name": "Renewable Energy",
+        "slug": "renewable-energy",
+        "description": "Information about solar, wind, hydro, and other renewable energy sources."
+      }
+    },
+    {
+      "model": "blog.category",
+      "pk": 3,
+      "fields": {
+        "name": "Conservation",
+        "slug": "conservation",
+        "description": "Topics related to wildlife conservation, habitat preservation, and biodiversity."
+      }
+    },
+    {
+      "model": "blog.category",
+      "pk": 4,
+      "fields": {
+        "name": "Sustainable Living",
+        "slug": "sustainable-living",
+        "description": "Tips and guides for living a more environmentally friendly lifestyle."
+      }
+    },
+    {
+      "model": "blog.category",
+      "pk": 5,
+      "fields": {
+        "name": "Waste Management",
+        "slug": "waste-management",
+        "description": "Information about recycling, composting, and reducing waste."
+      }
+    },
+    {
+      "model": "blog.category",
+      "pk": 6,
+      "fields": {
+        "name": "Environmental Justice",
+        "slug": "environmental-justice",
+        "description": "Articles about the fair treatment and involvement of all people in environmental issues."
+      }
+    }
+  ]
+  
