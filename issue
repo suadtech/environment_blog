@@ -1,0 +1,55 @@
+Issue 1:
+ Django Installation and Virtual Environment
+Problem: Django not found or virtual environment not activated
+Solution:
+* Activate your virtual environment: source venv/bin/activate
+* Install Django:pip install django
+* Verify installation:python -m django --version
+//////////////////////////////////////////////////////////////
+Issue 2:
+ Database Migration Issues
+Problem: "no such table: blog_post" error
+Solution:
+* Run migrations to create database tables:bash python manage.py makemigrations
+* python manage.py migrate
+* //////////////////////////////////////////////////
+Issue 3:
+ Heroku Deployment - "No web processes running" (H14)
+Problem: Web dyno not running
+Solution:
+1. Ensure your Procfile is correct:web: gunicorn eco_blog.wsgi --log-file -
+2. 
+3. Scale up your web dyno:bash heroku ps:scale web=1
+4. Or through Heroku Dashboard: Resources tab → enable web dyno
+5. Make sure gunicorn is in requirements.txt:django
+6. gunicorn
+7. whitenoise
+8. dj-database-url
+9. psycopg2-binary
+10. python-dotenv
+11. Pillow
+////////////////////////////////////////
+Issue 4: 
+Heroku Configuration
+Problem: Incorrect settings for Heroku
+Solution:
+* Update settings.py with proper Heroku configuration:python import dj_database_url
+* 
+* # Add WhiteNoise middleware
+* MIDDLEWARE = [
+*     'django.middleware.security.SecurityMiddleware',
+*     'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this
+*     
+* ]
+* 
+* # Configure database
+* db_from_env = dj_database_url.config(conn_max_age=600)
+* DATABASES['default'].update(db_from_env)
+* 
+* # Configure static files
+* STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+* STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+* 
+* # Allow Heroku domain
+* ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com']
+
