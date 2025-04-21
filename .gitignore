@@ -44,6 +44,6 @@ env/
 # OS specific
 .DS_Store
 Thumbs.db
-
+env.py
 # Heroku
 staticfiles/
