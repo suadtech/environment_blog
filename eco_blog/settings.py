@@ -34,9 +34,10 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com', 'environment-blog-cde9bfc98001.herokuapp.com','8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com', 'environment-blog-cde9bfc98001.herokuapp.com','8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io','8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io','8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',]
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
     "https://8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io",
     "https://*.gitpod.io",
     "https://*.herokuapp.com"
