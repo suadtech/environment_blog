@@ -34,7 +34,7 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com', 'environment-blog-cde9bfc98001.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com', 'environment-blog-cde9bfc98001.herokuapp.com','8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io']
 
 
 # Application definition
