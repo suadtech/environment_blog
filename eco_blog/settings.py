@@ -15,6 +15,9 @@ import os
 import dj_database_url
 
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 
 # Load environment variables from .env file
@@ -177,3 +180,18 @@ if 'GITPOD_WORKSPACE_URL' in os.environ:
     if f'https://8000-{gitpod_host}' not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(f'https://8000-{gitpod_host}')
 
+# Cloudinary configuration
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+# Use Cloudinary for media files in production
+if not DEBUG:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    MEDIA_URL = '/media/'
+else:
+    # Keep local storage for development
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
