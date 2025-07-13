@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     "blog",
+    "cloudinary_storage",
+    "cloudinary",
 ]
 
 
