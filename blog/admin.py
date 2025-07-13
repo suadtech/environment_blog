@@ -9,13 +9,19 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['title', 'author', 'publish', 'status']
+    list_display = ['title', 'author', 'publish', 'status', 'has_image']
     list_filter = ['status', 'created', 'publish', 'author', 'categories']
     search_fields = ['title', 'content']
     prepopulated_fields = {'slug': ('title',)}
     raw_id_fields = ['author']
     date_hierarchy = 'publish'
     ordering = ['-publish']
+    fields = ['title', 'slug', 'author', 'content', 'featured_image', 'categories', 'status']
+    
+    def has_image(self, obj):
+        return bool(obj.featured_image)
+    has_image.boolean = True
+    has_image.short_description = 'Has Image'
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):

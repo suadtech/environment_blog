@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+
 from dotenv import load_dotenv
 
 
@@ -30,21 +31,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-1ka@327#o&h9u=$lq+4o#t$uxerdp=(bs_p&@)xm6xcs%2iot+')
 SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-secret-key-for-dev')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
-
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com', 'environment-blog-cde9bfc98001.herokuapp.com','8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io','8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io','8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',]
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
-    "https://8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io",
-    "https://*.gitpod.io",
-    "https://*.herokuapp.com"
-]
-
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -52,9 +40,36 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
-    'blog',
-    'whitenoise.runserver_nostatic',
+    "blog",
+]
+
+
+
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com', 'environment-blog-cde9bfc98001.herokuapp.com','8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io', ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
+    "https://8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io",
+    'https://8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io',
+    "https://*.gitpod.io",
+    "https://*.herokuapp.com"
+]
+
+
+# Application definition
+
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1', 
+    '.herokuapp.com', 
+    'environment-blog-cde9bfc98001.herokuapp.com',
+    '8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
+    '8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
+    '8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io',
+    '*.gitpod.io',
 ]
 
 MIDDLEWARE = [
@@ -141,9 +156,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Media files (uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -156,4 +168,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
+import os
+if 'GITPOD_WORKSPACE_URL' in os.environ:
+    gitpod_url = os.environ['GITPOD_WORKSPACE_URL']
+    gitpod_host = gitpod_url.replace('https://', '').replace('http://', '')
+    if f'8000-{gitpod_host}' not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(f'8000-{gitpod_host}')
+    if f'https://8000-{gitpod_host}' not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(f'https://8000-{gitpod_host}')
 
