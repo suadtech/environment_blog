@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com', 'environment-blog-cde9bfc98001.herokuapp.com','8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io', ]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'environment-blog-cde9bfc98001.herokuapp.com','8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io', ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
