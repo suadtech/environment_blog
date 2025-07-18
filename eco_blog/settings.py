@@ -151,37 +151,44 @@ STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# CLOUDINARY CONFIGURATION - ALWAYS INITIALIZE
-# This ensures Cloudinary works in both Gitpod and Heroku
-cloudinary.config(
-    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAM', ''),  # Fixed: matches your Heroku variable
-    api_key=os.environ.get('CLOUDINARY_API_KEY', ''),
-    api_secret=os.environ.get('CLOUDINARY_API_SECRET', ''),
-)
-
-# Cloudinary Storage Configuration
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAM', ''),  # Fixed: matches your Heroku variable
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
-}
-
-# MEDIA FILES CONFIGURATION - FIXED
-# Check if we're on Heroku (has DATABASE_URL) or have Cloudinary credentials
-if ('DATABASE_URL' in os.environ or 
-    (os.environ.get('CLOUDINARY_CLOUD_NAM') and 
-     os.environ.get('CLOUDINARY_API_KEY') and 
-     os.environ.get('CLOUDINARY_API_SECRET'))):
-    # Use Cloudinary for media files
+# MEDIA FILES CONFIGURATION - SINGLE, CLEAN VERSION
+# Only use Cloudinary on Heroku, use local storage in Gitpod
+if 'DATABASE_URL' in os.environ:
+    # Production (Heroku) - use Cloudinary
+    cloudinary.config(
+        cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAM', ''),
+        api_key=os.environ.get('CLOUDINARY_API_KEY', ''),
+        api_secret=os.environ.get('CLOUDINARY_API_SECRET', ''),
+    )
+    
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAM', ''),
+        'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+        'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+    }
+    
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     MEDIA_URL = '/media/'
 else:
-    # Use local storage for development
+    # Development (Gitpod) - use local storage, no Cloudinary
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    # Don't initialize Cloudinary in development to avoid signature errors
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+
+# MEDIA FILES CONFIGURATION - GITPOD SAFE VERSION
+# Only use Cloudinary on Heroku, not in Gitpod
+if 'DATABASE_URL' in os.environ:
+    # Production (Heroku) - use Cloudinary
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    MEDIA_URL = '/media/'
+else:
+    # Development (Gitpod) - use local storage
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
