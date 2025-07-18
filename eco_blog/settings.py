@@ -10,15 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
 import os
 import dj_database_url
-
-from dotenv import load_dotenv
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-
+from pathlib import Path
+from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,16 +24,14 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-1ka@327#o&h9u=$lq+4o#t$uxerdp=(bs_p&@)xm6xcs%2iot+')
-SECRET_KEY = os.environ.get('SECRET_KEY', 'your-default-secret-key-for-dev')
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG=True
 
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -44,27 +40,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "whitenoise.runserver_nostatic",
+    "cloudinary_storage",  # Must be before django.contrib.staticfiles
     "django.contrib.staticfiles",
-    "blog",
-    "cloudinary_storage",
     "cloudinary",
+    "blog",
 ]
-
-
-
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'environment-blog-cde9bfc98001.herokuapp.com','8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io', ]
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
-    "https://8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io",
-    'https://8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io',
-    "https://*.gitpod.io",
-    "https://*.herokuapp.com"
-]
-
-
-# Application definition
 
 ALLOWED_HOSTS = [
     'localhost', 
@@ -76,6 +56,23 @@ ALLOWED_HOSTS = [
     '8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io',
     '*.gitpod.io',
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
+    "https://8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io",
+    'https://8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io',
+    "https://*.gitpod.io",
+    "https://*.herokuapp.com"
+]
+
+# Dynamic Gitpod URL handling
+if 'GITPOD_WORKSPACE_URL' in os.environ:
+    gitpod_url = os.environ['GITPOD_WORKSPACE_URL']
+    gitpod_host = gitpod_url.replace('https://', '').replace('http://', '')
+    if f'8000-{gitpod_host}' not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(f'8000-{gitpod_host}')
+    if f'https://8000-{gitpod_host}' not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(f'https://8000-{gitpod_host}')
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -107,7 +104,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "eco_blog.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -117,10 +113,10 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
 # Update database configuration from DATABASE_URL
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -140,60 +136,52 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# Media files (uploads)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# CLOUDINARY CONFIGURATION - ALWAYS INITIALIZE
+# This ensures Cloudinary works in both Gitpod and Heroku
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAM', ''),  # Fixed: matches your Heroku variable
+    api_key=os.environ.get('CLOUDINARY_API_KEY', ''),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET', ''),
+)
 
+# Cloudinary Storage Configuration
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAM', ''),  # Fixed: matches your Heroku variable
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+}
+
+# MEDIA FILES CONFIGURATION - FIXED
+# Check if we're on Heroku (has DATABASE_URL) or have Cloudinary credentials
+if ('DATABASE_URL' in os.environ or 
+    (os.environ.get('CLOUDINARY_CLOUD_NAM') and 
+     os.environ.get('CLOUDINARY_API_KEY') and 
+     os.environ.get('CLOUDINARY_API_SECRET'))):
+    # Use Cloudinary for media files
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    MEDIA_URL = '/media/'
+else:
+    # Use local storage for development
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
-import os
-if 'GITPOD_WORKSPACE_URL' in os.environ:
-    gitpod_url = os.environ['GITPOD_WORKSPACE_URL']
-    gitpod_host = gitpod_url.replace('https://', '').replace('http://', '')
-    if f'8000-{gitpod_host}' not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(f'8000-{gitpod_host}')
-    if f'https://8000-{gitpod_host}' not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(f'https://8000-{gitpod_host}')
-
-# Cloudinary configuration
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
-}
-
-# Use Cloudinary for media files in production
-if not DEBUG:
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    MEDIA_URL = '/media/'
-else:
-    # Keep local storage for development
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
