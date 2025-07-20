@@ -4,7 +4,29 @@
 
 # Learn more from ready-to-use templates: https://www.gitpod.io/docs/introduction/getting-started/quickstart
 
+image: gitpod/workspace-full
+
 tasks:
-  - init: pip install -r requirements.txt
+  - name: Django Setup
+    init: |
+      # Install PostgreSQL client
+      sudo apt-get update && sudo apt-get install -y postgresql-client
+      
+      # Set environment variables
+      export DATABASE_URL="postgresql://neondb_owner:npg_yOwvFLeK1mB2@ep-empty-firefly-a23ooyfg.eu-central-1.aws.neon.tech/stir_coral_pep_967399?sslmode=require"
+      
+      # Install Python dependencies
+      pip install -r requirements.txt
+      
+      # Run database migrations
+      python manage.py migrate
+      
+      # Create superuser (non-interactive)
+      echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', 'adminpassword') if not User.objects.filter(username='admin').exists() else None" | python manage.py shell
+      
+      # Start development server
+      python manage.py runserver 0.0.0.0:8000
 
-
+ports:
+  - port: 8000
+    onOpen: open-browser

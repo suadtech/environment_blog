@@ -11,59 +11,123 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
-import dj_database_url
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-1ka@327#o&h9u=$lq+4o#t$uxerdp=(bs_p&@)xm6xcs%2iot+')
-
-# SECURITY WARNING: don't run with debug turned on in production!
+# Security settings
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key')
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "whitenoise.runserver_nostatic",
-    "cloudinary_storage",  # Must be before django.contrib.staticfiles
-    "django.contrib.staticfiles",
-    "cloudinary",
-    "blog",
-]
-
 ALLOWED_HOSTS = [
-    'localhost', 
-    '127.0.0.1', 
-    '.herokuapp.com', 
+    'localhost',
+    '127.0.0.1',
+    '.herokuapp.com',
     'environment-blog-cde9bfc98001.herokuapp.com',
-    '8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
-    '8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
-    '8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io',
-    '*.gitpod.io',
+    '.gitpod.io',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://8000-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io',
-    "https://8001-suadtech-environmentblo-s0uh2fj5mfj.ws-eu120.gitpod.io",
-    'https://8000-suadtech-environmentblo-5zuyr9vzitd.ws-eu120.gitpod.io',
-    "https://*.gitpod.io",
-    "https://*.herokuapp.com"
+    'https://*.gitpod.io',
+    'https://*.herokuapp.com'
 ]
+
+# Application definition
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
+    'django.contrib.staticfiles',
+    'blog',
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'eco_blog.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'eco_blog.wsgi.application'
+
+# Database - Neon PostgreSQL
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'stir_coral_pep_967399',
+        'USER': 'neondb_owner',
+        'PASSWORD': 'npg_yOwvFLeK1mB2',
+        'HOST': 'ep-empty-firefly-a23ooyfg.eu-central-1.aws.neon.tech',
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
+}
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Internationalization
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
+USE_I18N = True
+USE_TZ = True
+
+# Static files
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Default primary key
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Dynamic Gitpod URL handling
 if 'GITPOD_WORKSPACE_URL' in os.environ:
@@ -73,122 +137,3 @@ if 'GITPOD_WORKSPACE_URL' in os.environ:
         ALLOWED_HOSTS.append(f'8000-{gitpod_host}')
     if f'https://8000-{gitpod_host}' not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(f'https://8000-{gitpod_host}')
-
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
-
-ROOT_URLCONF = "eco_blog.urls"
-
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ],
-        },
-    },
-]
-
-WSGI_APPLICATION = "eco_blog.wsgi.application"
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
-# Update database configuration from DATABASE_URL
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
-USE_I18N = True
-USE_TZ = True
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-
-# MEDIA FILES CONFIGURATION - SINGLE, CLEAN VERSION
-# Only use Cloudinary on Heroku, use local storage in Gitpod
-if 'DATABASE_URL' in os.environ:
-    # Production (Heroku) - use Cloudinary
-    cloudinary.config(
-        cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAM', ''),
-        api_key=os.environ.get('CLOUDINARY_API_KEY', ''),
-        api_secret=os.environ.get('CLOUDINARY_API_SECRET', ''),
-    )
-    
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAM', ''),
-        'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
-        'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
-    }
-    
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    MEDIA_URL = '/media/'
-else:
-    # Development (Gitpod) - use local storage, no Cloudinary
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-    # Don't initialize Cloudinary in development to avoid signature errors
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
-
-# MEDIA FILES CONFIGURATION - GITPOD SAFE VERSION
-# Only use Cloudinary on Heroku, not in Gitpod
-if 'DATABASE_URL' in os.environ:
-    # Production (Heroku) - use Cloudinary
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    MEDIA_URL = '/media/'
-else:
-    # Development (Gitpod) - use local storage
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
